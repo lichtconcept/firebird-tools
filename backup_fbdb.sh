@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
-set -x
+# enable debugging
+#set -x
 
 DB_SERVER="localhost"
 PROD_DATABASE="prod"
@@ -24,6 +25,7 @@ echo "Starting Backup of Database ${DB_SERVER}:${PROD_DATABASE}${DB_SUFFIX} at $
 # create directory if it does not exist
 mkdir -p "${BACKUP_DIR}/${DIR_YEAR}/${DIR_MONTH}"
 
+# shellcheck disable=SC1090
 . ${SYSDBA_PASSWORD_FILE}
 
 # Backup DB from DB-Server
@@ -64,5 +66,5 @@ do
     rm "${fbk}"
 done
 
-echo "###################################"
+echo "Finished Backup of Database ${DB_SERVER}:${PROD_DATABASE}${DB_SUFFIX} at $(date +%Y-%m-%d_%H-%M-%S)"
 exit 0
