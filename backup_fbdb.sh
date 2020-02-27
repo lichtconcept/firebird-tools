@@ -6,11 +6,26 @@
 DB_SERVER="localhost"
 PROD_DATABASE="prod"
 TEST_DATABASE="test"
-SYSDBA_PASSWORD_FILE="/etc/firebird/3.0/SYSDBA.password"
 BACKUP_DIR="/mnt/backups"
 DB_SUFFIX=".fdb"
 BACKUP_SUFFIX=".fbk"
 BACKUP_KEEP_COUNT="20"
+SYSDBA_PASSWORD_FILE="/etc/firebird/3.0/SYSDBA.password"
+ISC_PASSWORD_FILE="$(dirname $0)/ISC_PASSWORD_FILE"
+
+####################################################
+
+# Read db user password
+if [ -r "${ISC_PASSWORD_FILE}" ]
+then
+    # Use custom user
+    # shellcheck disable=SC1090
+    . "${ISC_PASSWORD_FILE=}"
+else
+    # Use db admin user
+    # shellcheck disable=SC1090
+    . ${SYSDBA_PASSWORD_FILE}
+fi
 
 ####################################################
 
@@ -24,9 +39,6 @@ echo "Starting Backup of Database ${DB_SERVER}:${PROD_DATABASE}${DB_SUFFIX} at $
 
 # create directory if it does not exist
 mkdir -p "${BACKUP_DIR}/${DIR_YEAR}/${DIR_MONTH}"
-
-# shellcheck disable=SC1090
-. ${SYSDBA_PASSWORD_FILE}
 
 # Backup DB from DB-Server
 if gbak -t \
