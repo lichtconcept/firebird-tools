@@ -20,7 +20,7 @@ if [ -r "${ISC_PASSWORD_FILE}" ]
 then
     # Use custom user
     # shellcheck disable=SC1090
-    . "${ISC_PASSWORD_FILE=}"
+    . "${ISC_PASSWORD_FILE}"
 else
     # Use db admin user
     # shellcheck disable=SC1090
