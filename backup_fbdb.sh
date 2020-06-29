@@ -41,9 +41,11 @@ echo "Starting Backup of Database ${DB_SERVER}:${PROD_DATABASE}${DB_SUFFIX} at $
 mkdir -p "${BACKUP_DIR}/${DIR_YEAR}/${DIR_MONTH}"
 
 # Backup DB from DB-Server
-if gbak -t \
+if gbak \
     -user "${ISC_USER}" \
     -password "${ISC_PASSWORD}" \
+    -backup_database \
+    -transportable \
     "${DB_SERVER}:${PROD_DATABASE}${DB_SUFFIX}" \
     "${BACKUP_DIR}/${DIR_YEAR}/${DIR_MONTH}/${FILE_TIMESTAMP}_${PROD_DATABASE}${BACKUP_SUFFIX}"
 then
