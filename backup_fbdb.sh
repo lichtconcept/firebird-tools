@@ -6,6 +6,7 @@
 DB_SERVER="localhost"
 PROD_DATABASE="prod"
 TEST_DATABASE="test"
+TEST_DATABASE_FILE="/var/lib/firebird/3.0/data/test.fdb"
 BACKUP_DIR="/mnt/backups"
 DB_SUFFIX=".fdb"
 BACKUP_SUFFIX=".fbk"
@@ -58,17 +59,15 @@ fi
 ### RESTORE EXAMPLE ###
 #gbak -user $ISC_USER -password $ISC_PASSWORD -replace /firebird/data/2019-09-26_05-00-02_Produktion.FBK localhost:prod.fdb
 if [ "$1" = "restore-test-db" ] ; then
-    # always use sysdba user for restore of database
-    # shellcheck disable=SC1090
-    . ${SYSDBA_PASSWORD_FILE}
     # Restore Backup of DB from DB-Server to Test DB
     if gbak \
         -user "${ISC_USER}" \
         -password "${ISC_PASSWORD}" \
-        -replace \
+        -recreate_database overwrite \
         "${BACKUP_DIR}/${DIR_YEAR}/${DIR_MONTH}/${FILE_TIMESTAMP}_${PROD_DATABASE}${BACKUP_SUFFIX}" \
-        "${DB_SERVER}:${TEST_DATABASE}${DB_SUFFIX}"
+        "${TEST_DATABASE}${DB_SUFFIX}"
     then
+        chown firebird:firebird ${TEST_DATABASE_FILE}
         echo "Successful restored Database ${DB_SERVER}:${PROD_DATABASE}${DB_SUFFIX} to ${DB_SERVER}:${TEST_DATABASE}${DB_SUFFIX}"
     else
         echo "Error while restoring Database ${DB_SERVER}:${PROD_DATABASE}${DB_SUFFIX} to ${DB_SERVER}:${TEST_DATABASE}${DB_SUFFIX}"
