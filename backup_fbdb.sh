@@ -56,6 +56,9 @@ fi
 ### RESTORE EXAMPLE ###
 #gbak -user $ISC_USER -password $ISC_PASSWORD -replace /firebird/data/2019-09-26_05-00-02_Produktion.FBK localhost:prod.fdb
 if [ "$1" = "restore-test-db" ] ; then
+    # always use sysdba user for restore of database
+    # shellcheck disable=SC1090
+    . ${SYSDBA_PASSWORD_FILE}
     # Restore Backup of DB from DB-Server to Test DB
     if gbak \
         -user "${ISC_USER}" \
